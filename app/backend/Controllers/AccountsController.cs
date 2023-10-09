@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("accounts/[controller]")]
-    public class AccountsController : ControllerBase
+    [Route("accounts")]
+    public class AccountsController : Controller
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
@@ -30,14 +30,15 @@ namespace backend.Controllers
         /// <param name="id"></param>
         /// <returns>Account</returns>
 
-        [HttpGet, Route("accounts/{account_id}")]
-        private async Task<IActionResult>? GetById(System.Guid id)
+        [HttpGet, Route("{account_id}")]
+        public async Task<IActionResult> GetById([FromRoute] string account_id)
         {
-            var result = await unitOfWork.AccountRepo.GetAsync(id);
-            if(result.Id != id)
-            {
+            if(!Guid.TryParse(account_id, out Guid id))
                 return BadRequest("Account not found.");
-            }
+
+            var result = await unitOfWork.AccountRepo.GetAsync(id);
+            if(result == null)
+                return BadRequest("Account not found.");
             
             int AccountBalance = 0;
             var resultTransactions = await unitOfWork.TransactionRepo.FindAsync(p => p.Account.Id == id);
@@ -51,6 +52,5 @@ namespace backend.Controllers
 
             return Ok(accountDto);
         }
-
     }
 }

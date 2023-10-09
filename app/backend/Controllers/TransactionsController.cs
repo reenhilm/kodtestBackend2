@@ -3,14 +3,15 @@ using backend.Core.Models;
 using backend.Core.Repositories;
 using backend.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("transactions/[controller]")]
-    public class TransactionsController : ControllerBase
+    [Route("transactions")]
+    public class TransactionsController : Controller
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
@@ -37,7 +38,7 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var getResult = await GetById(model.Id);
+            var getResult = await GetById(model.Id.ToString());
             if (getResult is not null)
             {
                 ModelState.AddModelError("Name", $"Transaction {model.Id} already exist");
@@ -58,9 +59,14 @@ namespace backend.Controllers
         /// <param name="id"></param>
         /// <returns>Transaction</returns>
 
-        [HttpGet, Route("transactions/{transaction_id}")]
-        private async Task<TransactionDto?> GetById(System.Guid id) =>
-                    mapper.Map<TransactionDto>(await unitOfWork.TransactionRepo.GetAsync(id));
+        [HttpGet, Route("{transaction_id}")]
+        public async Task<IActionResult> GetById([FromRoute] string transaction_id)
+        {
+            if (!Guid.TryParse(transaction_id, out Guid id))
+                return BadRequest("Transaction not found.");
+
+            return Ok(mapper.Map<TransactionDto>(await unitOfWork.TransactionRepo.GetAsync(Guid.Parse(transaction_id))));
+        }
 
         /// <summary>
         /// Returns all previously created transactions.
