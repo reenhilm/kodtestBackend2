@@ -2,6 +2,7 @@
 using backend.Core.Models;
 using backend.Core.Repositories;
 using backend.Shared.Dtos;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -38,18 +39,23 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var getResult = await GetById(model.Id.ToString());
-            if (getResult is not null)
+            var account = await unitOfWork.AccountRepo.GetAsync(model.AccountId);
+            if (account == null)
             {
-                ModelState.AddModelError("Name", $"Transaction {model.Id} already exist");
-                return BadRequest();
+                //Create new account
+                unitOfWork.AccountRepo.Add(new Account() { Id = new Guid(), Added=DateTime.Now, Balance = model.Amount });
+            }
+            else
+            {
+                //Update balance for account
+                account.Balance += model.Amount;
             }
 
             unitOfWork.TransactionRepo.Add(mapper.Map<Transaction>(model));
             var result = await unitOfWork.CompleteAsync();
 
             return result > 0
-            ? CreatedAtAction("Get", new { id = model.Id }, model)
+            ? new ObjectResult(model) { StatusCode = StatusCodes.Status201Created }
             : BadRequest();
         }
 

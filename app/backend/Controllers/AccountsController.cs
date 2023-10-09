@@ -24,6 +24,15 @@ namespace backend.Controllers
             this.unitOfWork = unitOfWork;
         }
 
+        // GET: api/Courses
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AccountDto>>> GetAccounts()
+        {
+            var accounts = await unitOfWork.AccountRepo.GetAllAsync();
+            var dto = mapper.Map<IEnumerable<AccountDto>>(accounts);
+            return Ok(dto);
+        }
+
         /// <summary>
         /// Returns the account data.
         /// </summary>
@@ -39,18 +48,13 @@ namespace backend.Controllers
             var result = await unitOfWork.AccountRepo.GetAsync(id);
             if(result == null)
                 return BadRequest("Account not found.");
-            
-            int AccountBalance = 0;
-            var resultTransactions = await unitOfWork.TransactionRepo.FindAsync(p => p.Account.Id == id);
-            resultTransactions.ToList().ForEach(transaction => { AccountBalance += transaction.Amount; });
 
-            AccountDto accountDto = new AccountDto()
-            {
-                Id = id,
-                Balance = AccountBalance
-            };
+            var retDto = mapper.Map<AccountDto>(result);
 
-            return Ok(accountDto);
+            //var resultTransactions = await unitOfWork.TransactionRepo.FindAsync(p => p.AccountId == id);
+            //resultTransactions.ToList();
+
+            return Ok(retDto);
         }
     }
 }

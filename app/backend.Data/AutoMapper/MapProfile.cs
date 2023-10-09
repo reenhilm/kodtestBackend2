@@ -8,11 +8,9 @@ namespace backend.Data.AutoMapper
     {
         public MapProfile()
         {
-            CreateMap<Transaction, TransactionDto>()
-                .ForMember(dest => dest.Account, from => from.MapFrom(m => m.Account))
-                .ReverseMap();
-
             CreateMap<Account, AccountDto>().ReverseMap();
+            CreateMap<Transaction, TransactionDto>().ReverseMap();
+            CreateMap<Transaction, TransactionForCreateDto>().ReverseMap();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace backend.Data.Context
         public BackendDbContext(DbContextOptions<BackendDbContext> options)
             : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll;
         }
 
         public DbSet<Transaction> Transactions => Set<Transaction>();

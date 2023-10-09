@@ -11,8 +11,8 @@ using backend.Data.Context;
 namespace backend.Data.Migrations
 {
     [DbContext(typeof(BackendDbContext))]
-    [Migration("20231009001934_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231009153630_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace backend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("AccountId")
+                    b.Property<Guid>("AccountId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Added")
@@ -61,11 +61,16 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("backend.Core.Models.Transaction", b =>
                 {
-                    b.HasOne("backend.Core.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId");
+                    b.HasOne("backend.Core.Models.Account", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Navigation("Account");
+            modelBuilder.Entity("backend.Core.Models.Account", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }
