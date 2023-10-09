@@ -11,7 +11,7 @@ namespace backend.Core.Models
         public int Balance { get; set; }
 
         [Required]
-        public DateTime Added { get; set; } = DateTime.MinValue;
+        public DateTimeOffset Added { get; set; }
 
         //Nav prop
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

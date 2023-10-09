@@ -23,7 +23,7 @@ namespace backend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Added")
+                    b.Property<DateTimeOffset>("Added")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Balance")
@@ -43,7 +43,7 @@ namespace backend.Data.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Added")
+                    b.Property<DateTimeOffset>("Added")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Amount")

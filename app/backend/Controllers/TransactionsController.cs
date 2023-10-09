@@ -51,11 +51,15 @@ namespace backend.Controllers
                 account.Balance += model.Amount;
             }
 
-            unitOfWork.TransactionRepo.Add(mapper.Map<Transaction>(model));
+            //TODO possible to use shadow property instead
+            var newTransaction = mapper.Map<Transaction>(model);
+            newTransaction.Added = DateTime.Now;
+
+            unitOfWork.TransactionRepo.Add(newTransaction);
             var result = await unitOfWork.CompleteAsync();
 
             return result > 0
-            ? new ObjectResult(model) { StatusCode = StatusCodes.Status201Created }
+            ? CreatedAtAction(nameof(GetById), new { transaction_id = newTransaction.Id }, mapper.Map<TransactionDto>(newTransaction))
             : BadRequest();
         }
 
@@ -65,7 +69,7 @@ namespace backend.Controllers
         /// <param name="id"></param>
         /// <returns>Transaction</returns>
 
-        [HttpGet, Route("{transaction_id}")]
+        [HttpGet, Route("{transaction_id}"), ActionName("GetById")]
         public async Task<IActionResult> GetById([FromRoute] string transaction_id)
         {
             if (!Guid.TryParse(transaction_id, out Guid id))

@@ -10,7 +10,7 @@ namespace backend.Core.Models
         public int Amount { get; set; }
 
         [Required]
-        public DateTime Added { get; set; } = DateTime.MinValue;
+        public DateTimeOffset Added { get; set; }
 
         //FK
         public Guid AccountId { get; set; }

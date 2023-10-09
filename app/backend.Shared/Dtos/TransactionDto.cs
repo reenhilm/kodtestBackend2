@@ -16,7 +16,7 @@ namespace backend.Shared.Dtos
 
         [Required]
         [Newtonsoft.Json.JsonProperty("created_at", Required = Newtonsoft.Json.Required.Always)]
-        public System.DateTime Added { get; set; }
+        public System.DateTimeOffset Added { get; set; }
 
         [Required]
         [Newtonsoft.Json.JsonProperty("account_id", Required = Newtonsoft.Json.Required.Always)]

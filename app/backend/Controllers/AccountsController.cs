@@ -24,7 +24,16 @@ namespace backend.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        // GET: api/Courses
+
+
+        //TODO: Remove GetAccounts before production, not a good idea to show all accounts (I've used it in development)
+        /// <summary>
+        /// Returns all accounts.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Accounts</returns>
+        
+        /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AccountDto>>> GetAccounts()
         {
@@ -32,6 +41,7 @@ namespace backend.Controllers
             var dto = mapper.Map<IEnumerable<AccountDto>>(accounts);
             return Ok(dto);
         }
+        */
 
         /// <summary>
         /// Returns the account data.
@@ -50,9 +60,6 @@ namespace backend.Controllers
                 return BadRequest("Account not found.");
 
             var retDto = mapper.Map<AccountDto>(result);
-
-            //var resultTransactions = await unitOfWork.TransactionRepo.FindAsync(p => p.AccountId == id);
-            //resultTransactions.ToList();
 
             return Ok(retDto);
         }

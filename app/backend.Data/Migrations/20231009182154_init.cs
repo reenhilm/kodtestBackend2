@@ -17,7 +17,7 @@ namespace backend.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Balance = table.Column<int>(type: "INTEGER", nullable: false),
-                    Added = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Added = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +30,7 @@ namespace backend.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Amount = table.Column<int>(type: "INTEGER", nullable: false),
-                    Added = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Added = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     AccountId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>

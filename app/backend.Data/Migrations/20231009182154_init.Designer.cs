@@ -11,7 +11,7 @@ using backend.Data.Context;
 namespace backend.Data.Migrations
 {
     [DbContext(typeof(BackendDbContext))]
-    [Migration("20231009153630_init")]
+    [Migration("20231009182154_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace backend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Added")
+                    b.Property<DateTimeOffset>("Added")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Balance")
@@ -46,7 +46,7 @@ namespace backend.Data.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Added")
+                    b.Property<DateTimeOffset>("Added")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Amount")

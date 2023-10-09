@@ -17,7 +17,6 @@ namespace backend.Data.Context
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             ChangeTracker.DetectChanges();
-
             return base.SaveChangesAsync(cancellationToken);
         }
     }
