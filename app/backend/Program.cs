@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using backend.Extensions;
+using backend.ResultFilter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,10 @@ builder.Services.AddCors(options =>
 
 //ToDo register Automapper
 
-builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+builder.Services.AddControllers(opt => {
+    opt.ReturnHttpNotAcceptable = true;
+    opt.Filters.Add(new MyApiResultFilter());
+})
     .AddNewtonsoftJson()
     .AddXmlDataContractSerializerFormatters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
