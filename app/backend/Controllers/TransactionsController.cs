@@ -31,31 +31,40 @@ namespace backend.Controllers
         [HttpPost, ActionName("insert")]
         public async Task<IActionResult>? InsertAsync([FromBody] TransactionForCreateDto model)
         {
-            if (unitOfWork is null) return BadRequest();
-
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("Name", "Mandatory body parameters missing or have incorrect type.");
                 return BadRequest(ModelState);
             }
+           
+            var account = await unitOfWork.AccountRepo.GetAsync(Guid.Parse(model.AccountId));
 
-            var account = await unitOfWork.AccountRepo.GetAsync(model.AccountId);
+            var newTransaction = mapper.Map<Transaction>(model);
+            newTransaction.Added = DateTime.Now;
+
             if (account == null)
             {
                 //Create new account
-                unitOfWork.AccountRepo.Add(new Account() { Id = new Guid(), Added=DateTime.Now, Balance = model.Amount });
+                unitOfWork.AccountRepo.Add(new Account() {
+                    Id = newTransaction.AccountId,
+                    Added=DateTime.Now,
+                    Balance = model.Amount,
+                    Transactions = new List<Transaction>() { newTransaction }
+                });
             }
             else
             {
                 //Update balance for account
                 account.Balance += model.Amount;
+                unitOfWork.TransactionRepo.Add(newTransaction);
             }
 
-            //TODO possible to use shadow property instead
-            var newTransaction = mapper.Map<Transaction>(model);
-            newTransaction.Added = DateTime.Now;
+            /* 
+            "400": { "description": "Mandatory body parameters missing or have incorrect type."
+            "405": { "description": "Specified HTTP method not allowed."
+            "415": { "description": "Specified content type not allowed."
+             */
 
-            unitOfWork.TransactionRepo.Add(newTransaction);
             var result = await unitOfWork.CompleteAsync();
 
             return result > 0
@@ -73,9 +82,13 @@ namespace backend.Controllers
         public async Task<IActionResult> GetById([FromRoute] string transaction_id)
         {
             if (!Guid.TryParse(transaction_id, out Guid id))
-                return BadRequest("Transaction not found.");
+                return BadRequest(new { description = "transaction_id missing or has incorrect type." });
 
-            return Ok(mapper.Map<TransactionDto>(await unitOfWork.TransactionRepo.GetAsync(Guid.Parse(transaction_id))));
+            var result = await unitOfWork.TransactionRepo.GetAsync(Guid.Parse(transaction_id));
+            if(result == null)
+                return NotFound(new { description = "Transaction not found." });
+
+            return Ok(mapper.Map<TransactionDto>(result));
         }
 
         /// <summary>
@@ -85,8 +98,6 @@ namespace backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Transaction>>?> GetAllAsync()
         {
-            if (unitOfWork is null) return BadRequest();
-
             var getResult = await unitOfWork.TransactionRepo.GetAllAsync();
 
             return Ok(mapper.Map<IEnumerable<TransactionDto>>(getResult));

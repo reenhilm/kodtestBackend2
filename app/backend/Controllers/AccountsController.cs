@@ -53,11 +53,11 @@ namespace backend.Controllers
         public async Task<IActionResult> GetById([FromRoute] string account_id)
         {
             if(!Guid.TryParse(account_id, out Guid id))
-                return BadRequest("Account not found.");
+                return BadRequest(new { description = "account_id missing or has incorrect type." });
 
-            var result = await unitOfWork.AccountRepo.GetAsync(id);
+            var result = await unitOfWork.AccountRepo.GetAsync(Guid.Parse(account_id));
             if(result == null)
-                return BadRequest("Account not found.");
+                return NotFound(new { description = "Account not found." });
 
             var retDto = mapper.Map<AccountDto>(result);
 

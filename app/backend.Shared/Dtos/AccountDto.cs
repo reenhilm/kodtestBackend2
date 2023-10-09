@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using backend.Shared.Validations;
 using Newtonsoft.Json;
 
 namespace backend.Shared.Dtos
 {
     public class AccountDto
     {
-        [Required]
-        [Newtonsoft.Json.JsonProperty("account_id", Required = Newtonsoft.Json.Required.Always)]
-        public Guid Id { get; set; }
+        [RequiredGUIDAttribute(ErrorMessage = "account_id missing or has incorrect type.")]
+        [Newtonsoft.Json.JsonProperty("account_id", Required = Newtonsoft.Json.Required.Default)]
+        public string? Id { get; set; } = default!;
 
         [Required]
         [Newtonsoft.Json.JsonProperty("balance", Required = Newtonsoft.Json.Required.Always)]

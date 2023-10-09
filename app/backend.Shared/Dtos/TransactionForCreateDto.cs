@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 using Newtonsoft.Json;
+using backend.Shared.Validations;
 
 namespace backend.Shared.Dtos
 {
@@ -10,8 +11,8 @@ namespace backend.Shared.Dtos
         [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Always)]
         public int Amount { get; set; }
 
-        [Required]
-        [Newtonsoft.Json.JsonProperty("account_id", Required = Newtonsoft.Json.Required.Always)]
-        public Guid AccountId { get; set; }
+        [RequiredGUIDAttribute(ErrorMessage = "account_id missing or has incorrect type.")]
+        [Newtonsoft.Json.JsonProperty("account_id", Required = Newtonsoft.Json.Required.Default)]
+        public string? AccountId { get; set; } = default!;
     }
 }
