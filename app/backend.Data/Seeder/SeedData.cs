@@ -11,6 +11,7 @@ namespace backend.Data.Seeder
     {
         public static async Task InitAsync(IDevUoW uow)
         {
+            /*
             if (uow is null) throw new ArgumentNullException(nameof(uow));
 
             Guid Account1 = Guid.Parse("74760610-ed76-40e9-b606-a8f96a71ba5b");
@@ -61,6 +62,7 @@ namespace backend.Data.Seeder
                 });
 
             await uow.CompleteAsync();
+            */
         }
     }
 }
