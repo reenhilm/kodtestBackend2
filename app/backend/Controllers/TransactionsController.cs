@@ -59,12 +59,6 @@ namespace backend.Controllers
                 unitOfWork.TransactionRepo.Add(newTransaction);
             }
 
-            /* 
-            "400": { "description": "Mandatory body parameters missing or have incorrect type."
-            "405": { "description": "Specified HTTP method not allowed."
-            "415": { "description": "Specified content type not allowed."
-             */
-
             var result = await unitOfWork.CompleteAsync();
 
             return result > 0

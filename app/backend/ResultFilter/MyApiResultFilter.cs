@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Net;
 
 namespace backend.ResultFilter
 {
@@ -12,6 +13,21 @@ namespace backend.ResultFilter
         public void OnResultExecuted(ResultExecutedContext context)
         {
 
+        }
+
+        private bool IsJsonRequest(string contentType)
+        {
+            return contentType.ToLower().Contains("application/json");
+        }
+
+        private bool IsJsonRequest(HttpRequest request)
+        {
+            return request.ContentType.ToLower().Contains("application/json");
+        }
+
+        private bool IsPOSTOnTransactionsRequest(HttpRequest request)
+        {
+            return request.Method.ToUpper() == "POST" && request.Path.Value.ToLower() == "/transactions";
         }
 
         public void OnResultExecuting(ResultExecutingContext context)
@@ -30,7 +46,14 @@ namespace backend.ResultFilter
                         errors.Add(key, errorMessages);
                     }
                 }
-                if(errors.ContainsKey("AccountId"))
+
+                if (!IsJsonRequest(context.HttpContext.Request) && IsPOSTOnTransactionsRequest(context.HttpContext.Request))
+                {
+                    var result = new ObjectResult(new { description = "Specified content type not allowed." });
+                    result.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
+                    context.Result = result;
+                }
+                else if (errors.ContainsKey("AccountId"))                    
                     context.Result = new BadRequestObjectResult(new { description = "account_id missing or has incorrect type." });
                 else
                     context.Result = new BadRequestObjectResult(new { description = "Mandatory body parameters missing or have incorrect type." });
