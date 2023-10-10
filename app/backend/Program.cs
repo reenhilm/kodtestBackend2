@@ -36,6 +36,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers(opt => {
     opt.ReturnHttpNotAcceptable = true;
     opt.Filters.Add(new MyApiResultFilter());
+
 })
     .AddNewtonsoftJson()
     .AddXmlDataContractSerializerFormatters();
